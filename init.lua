@@ -397,6 +397,7 @@ require('lazy').setup({
       -- vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>.', builtin.oldfiles, { desc = 'Search Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = 'Find existing buffers' })
+      vim.keymap.set('n', '<leader>c', builtin.command_history, { desc = 'Command history' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = 'Fuzzily search in current buffer' })
@@ -612,7 +613,6 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         -- tsserver = {},
         --
-
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -870,7 +870,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'php' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -962,6 +962,8 @@ require('lazy').setup({
 
 -- my additional stuff
 vim.opt.showtabline = 2
+vim.opt.wrap = false
+
 vim.keymap.set('n', '<C-s>', ':w<CR>', { noremap = true, silent = true })
 
 vim.keymap.set('n', '<C-Left>', ':tabprevious<CR>', { noremap = true, silent = true })
@@ -974,7 +976,39 @@ vim.keymap.set('n', '<C-x>', ':close<CR>', { noremap = true, silent = true })
 
 vim.keymap.set('v', 'r', 'P', { noremap = true, silent = true })
 
+-- in normal mode remap control R (redo) with shift R ("replace mode")
+vim.keymap.set('n', '<C-r>', '<S-r>', { noremap = true, silent = true })
+
 require'lspconfig'.perlnavigator.setup{ cmd = { "perlnavigator" } }
+
+local lspconfig = require 'lspconfig'
+local configs = require 'lspconfig.configs'
+-- configs.helix_gpt_ollama = {
+--   default_config = {
+--     cmd = { '/home/cem/Setups/nvim-ollama-run.sh' },
+--     filetypes = {'sh'},
+--     root_dir = function(fname)
+--       -- return lspconfig.util.find_git_ancestor(fname)
+--       return vim.loop.cwd()
+--     end,
+--     settings = {},
+--   },
+-- }
+-- lspconfig.helix_gpt_ollama.setup{}
+
+configs.helix_gpt_copilot = {
+  default_config = {
+    cmd = { '/home/cem/Setups/nvim-gpt-run.sh' },
+    filetypes = { 'bash', 'sh', 'lua', 'javascript', 'typescript', 'php', 'perl', 'python', 'c', 'cpp', 'html', 'css', 'less', 'twig', 'markdown' },
+    root_dir = function(fname)
+      -- return lspconfig.util.find_git_ancestor(fname)
+      return vim.loop.cwd()
+    end,
+    -- root_dir = lspconfig.util.root_pattern('tsconfig.json', 'jsconfig.json', 'package.json', '.git'),
+    settings = {},
+  },
+}
+lspconfig.helix_gpt_copilot.setup{}
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
