@@ -356,6 +356,8 @@ require('lazy').setup({
 
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
+      local actions = require "telescope.actions"
+
       require('telescope').setup {
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
@@ -369,9 +371,15 @@ require('lazy').setup({
               preview_width = 0.5
             }
           },
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
+          mappings = {
+            -- i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+            i = {
+              ["<CR>"] = actions.select_tab,
+            },
+            n = {
+              ["<CR>"] = actions.select_tab,
+            }
+          },
         },
         -- pickers = {}
         extensions = {
@@ -933,6 +941,12 @@ require('lazy').setup({
       }
     end,
   },
+  {
+    "FabijanZulj/blame.nvim",
+    config = function()
+      require("blame").setup()
+    end
+  }
   -- {
   --   "liuchengxu/vista.vim",
   -- }
@@ -976,8 +990,10 @@ vim.keymap.set('n', '<C-x>', ':close<CR>', { noremap = true, silent = true })
 
 vim.keymap.set('v', 'r', 'P', { noremap = true, silent = true })
 
--- in normal mode remap control R (redo) with shift R ("replace mode")
-vim.keymap.set('n', '<C-r>', '<S-r>', { noremap = true, silent = true })
+-- in normal mode remap shift U to control R (redo)
+vim.keymap.set('n', 'U', '<C-r>', { noremap = true, silent = true })
+
+vim.keymap.set('n', '<C-b>', ':BlameToggle<CR><C-w><C-h>', { noremap = true, silent = true })
 
 require'lspconfig'.perlnavigator.setup{ cmd = { "perlnavigator" } }
 
